@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Task 3</title>
+<link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet">
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+
+<style>
+table {
+  border-spacing: 0;
+  width: 100%;
+  border: 1px solid #ddd;
+}
+
+th {
+  cursor: pointer;
+  background:#cbd6e2;
+  color:#221f4d;
+  font-family:Open Sans,Semibold;
+  font-size:12px;
+  text-transform: capitalize;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px 15px;
+}
+td{
+ font-family:Open Sans,Regular;
+ font-size:12px;
+ color:#221f4d;
+ 
+ 
+}
+ 
+tr:hover    
+{
+background:#e7effd !important;
+outline-style: solid;
+outline-color: #0f5ef0;
+}
+
+tr:nth-child(odd) {
+  background-color: #f5f8fa;
+}
+th i
+{
+float:right;
+opacity:0.5;
+}
+.active{
+opacity:1.0;
+}
+</style>
+</head>
+<body>
+ 
+
+<table id="myTable">
+</table>
+
+<script>
+fetcht();
+
+async function fetcht(){
+var datav=[];
+
+let response = await fetch('http://usweb.dotomi.com/resources/swfs/cookies.json');
+  let data = await response.json()
+  datav= data;
+  
+function generateTableHead(table, data) {
+
+  let thead = table.createTHead();
+  let row = thead.insertRow();
+  var count=0;
+  for (let key of data) {
+    let th = document.createElement("th");
+	th.setAttribute("onclick","sortTable("+count+")");
+
+    let text = document.createTextNode(key);
+    
+	th.innerHTML=key+'<i class="fa fa-sort-desc"></i>';
+    row.appendChild(th);
+	count++;
+  }
+}
+function generateTable(table, data) {
+  for (let element of data) {
+    let row = table.insertRow();
+    for (key in element) {
+      let cell = row.insertCell();
+      let text = document.createTextNode(element[key]);
+      cell.appendChild(text);
+    }
+  }
+}
+let table = document.querySelector("table");
+let datas = Object.keys(datav[0]);
+generateTableHead(table, datas);
+generateTable(table, datav);
+
+}
+
+
+
+
+
+
+
+
+
+function sortTable(n) {
+ 
+  var table, rows, switching, i, x, y, shouldSwitch, dir, switchcount = 0;
+  table = document.getElementById("myTable");
+  switching = true;
+  var sections = document.querySelectorAll('table th');
+    for (i = 0; i < sections.length; i++){
+
+        sections[i].childNodes[1].classList.remove('active');    
+
+    }
+  event.target.childNodes[1].classList.add("active");
+  
+  dir = "asc"; 
+  
+  while (switching) {
+    
+    switching = false;
+    rows = table.rows;
+    
+    for (i = 1; i < (rows.length - 1); i++) {
+     
+      shouldSwitch = false;
+      
+      x = rows[i].getElementsByTagName("TD")[n];
+      y = rows[i + 1].getElementsByTagName("TD")[n];
+      
+      if (dir == "asc") {
+        if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+         
+          shouldSwitch= true;
+          break;
+        }
+      } else if (dir == "desc") {
+        if (x.innerHTML.toLowerCase() < y.innerHTML.toLowerCase()) {
+          
+          shouldSwitch = true;
+          break;
+        }
+      }
+    }
+    if (shouldSwitch) {
+      
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+      
+      switchcount ++;      
+    } else {
+      
+      if (switchcount == 0 && dir == "asc") {
+        dir = "desc";
+        switching = true;
+      }
+    }
+  }
+}
+</script>
+
+</body>
+</html>
